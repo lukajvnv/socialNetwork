@@ -1,0 +1,50 @@
+#table-page {
+    .header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    table {
+        position: relative;
+
+        .lock-table {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            left: 0;
+            top: 0;
+            background: rgba(255, 255, 255, .9);
+            z-index: 500;
+        }
+    }
+
+    .table-header {
+        background: $blue;
+
+        th {
+            color: white;
+        }
+    }
+
+    .table-row-0 {
+        background: $tableRow1;
+        transition: .15s;
+
+        &:hover,
+        &.selected {
+            background: $tableRow1Hover;
+            transition: .15s;
+        }
+    }
+
+    .table-row-1 {
+        background: $tableRow2;
+
+        &:hover,
+        &.selected {
+            background: $tableRow2Hover;
+            transition: .15s;
+        }
+    }
+}

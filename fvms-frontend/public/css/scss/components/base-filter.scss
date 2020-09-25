@@ -1,0 +1,22 @@
+#filter {
+
+    .filter-header {
+        width: 250px;
+        padding: 5px;
+        background: $blue;
+
+        button {
+            color: white;
+
+        }
+    }
+
+    .filter-content-container {
+        width: 250px;
+    }
+
+    .control-container {
+        margin-top: 50px;
+        text-align: center;
+    }
+}

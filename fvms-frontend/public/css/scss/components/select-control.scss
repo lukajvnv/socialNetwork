@@ -1,0 +1,27 @@
+.select-control-container {
+
+    margin-top: 8px;
+    min-width: 150px;
+
+    label {
+        font-size: 13px;
+        line-height: 1;
+        color: rgba(0, 0, 0, 0.54);
+        margin-bottom: 8px;
+        display: block;
+    }
+
+    &.error {
+        label {
+            color: $error;
+        }
+    }
+
+    .error {
+        color: $error;
+        font-size: 13px;
+        line-height: 1;
+        margin: 8px 0;
+    }
+
+}

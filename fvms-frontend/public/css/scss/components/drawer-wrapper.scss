@@ -1,0 +1,24 @@
+.drawer-wrapper {
+
+    .drawer-wrapper-header {
+        width: 300px;
+        padding: 5px;
+        background: $blue;
+
+        @media screen and (min-width: $break-md) {
+            width: 550px;
+        }
+
+        button {
+            color: white;
+        }
+    }
+
+    .drawer-wrapper-content {
+        width: 300px;
+
+        @media screen and (min-width: $break-md) {
+            width: 550px;
+        }
+    }
+}

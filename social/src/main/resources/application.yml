@@ -1,0 +1,58 @@
+server:
+  port: 8081
+
+auth0:
+  audience: http://localhost:8081/api
+
+spring:
+  application:
+    name: Social backend application
+  mail:
+    default-encoding: UTF-8
+    host: smtp.gmail.com
+    username: isa.airflights.project@gmail.com
+    password: isa.airflights.project12
+    port: 587
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+            required: true
+          ssl:
+            trust: smtp.gmail.com
+    protocol: smtp
+    test-connection: false
+  servlet:
+    multipart:
+      max-file-size: 7MB
+      max-request-size: 7MB
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/social?useSSL=false&createDatabaseIfNotExist=true&allowPublicKeyRetrieval=true
+    username: root
+    password: root
+    sql-script-encoding: UTF-8
+    initialization-mode: always
+    tomcat:
+      test-while-idle: true
+      validation-query: SELECT 1
+  jpa:
+    database-platform: org.hibernate.dialect.MySQLDialect
+    show-sql: true
+    hibernate:
+      ddl-auto: create
+      naming:
+        strategy: org.hibernate.cfg.ImprovedNamingStrategy
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL5Dialect
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: https://dev-83w8auix.us.auth0.com/
+mail:
+  smtp:
+    debug: true

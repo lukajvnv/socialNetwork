@@ -1,0 +1,27 @@
+#header {
+
+    position: fixed;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 15px;
+    z-index: 100;
+
+    top: 0;
+    left: 250px;
+
+    width: calc(100% - 250px);
+    height: 80px;
+    background: white;
+    border-bottom: 1px solid $gray;
+    transition: .3s;
+
+    &.short {
+
+        width: calc(100%);
+        left: 0;
+        transition: .3s;
+    }
+
+
+}

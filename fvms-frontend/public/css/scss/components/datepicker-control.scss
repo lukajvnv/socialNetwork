@@ -1,0 +1,53 @@
+.datepicker-control-container {
+
+    display: flex;
+    align-items: flex-end;
+
+    label {
+        font-size: 13px;
+        line-height: 1;
+        color: rgba(0, 0, 0, 0.54);
+        margin-bottom: 8px;
+        display: block;
+    }
+
+    &.error {
+        label {
+            color: $error;
+        }
+    }
+
+    .error {
+        color: $error;
+        font-size: 13px;
+        line-height: 1;
+        margin: 8px 0;
+    }
+
+    input {
+        margin-top: 8px;
+        height: 37px;
+        padding: 0 10px;
+        font-size: 16px;
+        border-radius: 2px;
+        border: 1px solid $borderColor;
+    }
+}
+
+form {
+    .datepicker-control-container {
+        flex-direction: column;
+        width: 100%;
+        align-items: flex-start;
+
+        .react-datepicker__input-container,
+        .react-datepicker-wrapper {
+            display: block;
+            width: 100%;
+
+            input {
+                width: 100%;
+            }
+        }
+    }
+}
