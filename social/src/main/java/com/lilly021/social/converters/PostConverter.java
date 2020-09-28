@@ -12,8 +12,10 @@ import com.lilly021.social.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Component
@@ -49,14 +51,17 @@ public class PostConverter implements ConverterInterface<Post, PostDto> {
                 .author(author)
                 .imageUri(object.getImageUri())
                 .fileUri(object.getFileUri())
-                .comments(object.getComments()
-                        .stream().map(c -> convertToDto(c, object.getId())).collect(Collectors.toList()))
                 .build();
-//
-//        if(object.getComments() != null){
-//            postDto.setComments(object.getComments()
-//                    .stream().map(c -> convertToDto(c, object.getEntityId())).collect(Collectors.toList()));
-//        }
+
+        List<CommentDto> commentDtoList = object.getComments()
+                .stream().map(c -> convertToDto(c, object.getId())).collect(Collectors.toList());
+
+        List<CommentDto> sortedCommentList = commentDtoList
+                .stream()
+                .sorted((f1, f2) -> Long.compare(f2.getId(), f1.getId()))
+                .collect(Collectors.toList());
+
+        postDto.setComments(sortedCommentList);
 
         return postDto;
     }

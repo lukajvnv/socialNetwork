@@ -98,7 +98,6 @@ public class UserService implements ServiceInterface<User, UserDto, Long> {
         }
 
         user.getUsersSettings().clear();
-//        userRepository.save(user);
         user.getUsersSettings().addAll(userSettings);
         userRepository.save(user);
 

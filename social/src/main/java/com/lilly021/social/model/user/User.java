@@ -37,7 +37,6 @@ public class User implements Serializable, UserDetails {
     private String occupation;
     private String address;
     private String urlProfile;
-    //nekako profilnu razluciti
     private boolean accountExpired;
     private boolean accountLocked;
     private boolean credentialsExpired;
@@ -53,10 +52,6 @@ public class User implements Serializable, UserDetails {
     @ManyToMany
     @JoinTable(name = "USERS_ATTRIBUTES", joinColumns = @JoinColumn(name = "USER_ID", referencedColumnName = "ID"), inverseJoinColumns = @JoinColumn(name = "ATTRIBUTE_ID", referencedColumnName = "ID"))
     private List<UserAttribute> usersAttributes;
-
-//    @ManyToMany
-//    @JoinTable(name = "USERS_SETTINGS", joinColumns = @JoinColumn(name = "USER_ID", referencedColumnName = "ID"), inverseJoinColumns = @JoinColumn(name = "SETTING_ID", referencedColumnName = "ID"))
-//    private List<Setting> usersSettings;
 
     @OneToMany(mappedBy = "user", orphanRemoval = true, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     private List<UserSetting> usersSettings;

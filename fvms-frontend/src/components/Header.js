@@ -49,7 +49,7 @@ class Header extends Component {
     logout() {
         logout();
         this.props.logout();
-        this.props.history.push('/');
+        this.props.history.push('/login');
     }
 
     lock() {
@@ -100,12 +100,13 @@ class Header extends Component {
                             {strings.profile.profile}<PersonIcon />
                         </IconButton>
                     </Link>
-                    <Badge badgeContent={5} color="primary">
-                        <IconButton color="primary">
-                            <ChatBubbleIcon />
-                        </IconButton>
-                    </Badge>
-
+                    <Link to={"/chat"} >
+                        <Badge badgeContent={5} color="primary">
+                            <IconButton color="primary">
+                                <ChatBubbleIcon />
+                            </IconButton>
+                        </Badge>
+                    </Link>
                     <Link to={"/settings"} >
                         <Tooltip title={strings.profile.settings.title} aria-label="add" arrow>
                             <IconButton color="primary">

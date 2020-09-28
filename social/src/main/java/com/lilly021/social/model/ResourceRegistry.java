@@ -26,6 +26,4 @@ public class ResourceRegistry {
     @ManyToOne
     private Post post;
 
-    //nekako profilnu razluciti
-
 }

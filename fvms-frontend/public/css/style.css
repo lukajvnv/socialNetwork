@@ -366,4 +366,28 @@ h2, h4 {
         width: 50%
 }
 
+.chat {
+  /* position: relative;
+  width: calc(100% - 250px);
+  height: calc(100% - 80px); */
+  position: relative; 
+  top: 0;
+  left: 0px;
+  width: 100%;
+  /* height: 100vh;  */
+  height: calc(100vh - 120px);
+  border: 1px solid red;
+}
+
+.chatBottomHeader {
+  position: absolute;
+  bottom: 1px; 
+  border: 1px solid blue;
+  margin: 50px
+}
+
+.chatTest {
+  border: 1px solid green;
+}
+
 /*# sourceMappingURL=style.css.map */

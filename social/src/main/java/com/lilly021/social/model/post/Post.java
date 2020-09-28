@@ -32,5 +32,4 @@ public class Post {
 
     @ManyToOne
     private User author;
-    //tagovi korisnika, lokacije
 }

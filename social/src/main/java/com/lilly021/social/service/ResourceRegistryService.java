@@ -35,8 +35,6 @@ public class ResourceRegistryService {
             String fileType = fileName.substring(dotIndex + 1, fileName.length());
             String fileUrl = IMAGE_FOLDER + fileName;
 
-//            String writerNames[] = ImageIO.getWriterFormatNames();
-
             File outputfile = new File(fileUrl);
 
             ByteArrayInputStream bis = new ByteArrayInputStream(profileImage.getBytes());
@@ -82,7 +80,6 @@ public class ResourceRegistryService {
             byte[] ui = Files.readAllBytes(outputFile.toPath());
             return ui;
         } catch (IOException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
         return null;
@@ -96,7 +93,6 @@ public class ResourceRegistryService {
             byte[] ui = Files.readAllBytes(outputFile.toPath());
             return ui;
         } catch (IOException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
         return null;

@@ -220,10 +220,16 @@ let strings = new LocalizedStrings({
 
                 },
                 fileError: 'Wrong file format(.pdf is allowed)'
-            }
+            },
+            like: 'Like',
+            likes: 'likes'
         },
         comment: {
-            new: 'Add comment'
+            new: 'Add comment',
+            title: 'Comment',
+            placeholder: 'Put your comment here',
+            send: 'Send',
+            plural: 'comments'
         }
     }
 });

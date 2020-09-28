@@ -10,8 +10,8 @@ import PostDialogWrapper from './PostDialogWrapper';
 import { withSnackbar } from "notistack";
 import Validators from "../../../../constants/ValidatorTypes";
 import { post } from '../../../../services/PostService';
-import {uploadPdfFile, uploadImage} from '../../../../services/ResourceSevice';
-import {getUserPosts, getPosts} from '../../../../services/PostService';
+import { uploadPdfFile, uploadImage } from '../../../../services/ResourceSevice';
+import { getUserPosts, getPosts } from '../../../../services/PostService';
 import Card from '@material-ui/core/Card';
 import CardActionArea from '@material-ui/core/CardActionArea';
 import CardActions from '@material-ui/core/CardActions';
@@ -37,43 +37,67 @@ class ProfilePosts extends Page {
     constructor(props) {
         super(props);
 
-        this.state = {
-            data: {
-                text: '',
-                feeling: '',
-                place: '',
-                style: '',
-                imageUri: '',
-                fileUri: '',
-                author: props.user
-            },
-            errors: {},
-            image: { name: '', value: undefined },
-            docFile: { name: '', value: undefined },
-            dialogOpen: false,
-            posts: []
-        }
+        // this.state = {
+        //     data: {
+        //         text: '',
+        //         feeling: '',
+        //         place: '',
+        //         style: '',
+        //         imageUri: '',
+        //         fileUri: '',
+        //         author: props.user
+        //     },
+        //     errors: {},
+        //     image: { name: '', value: undefined },
+        //     docFile: { name: '', value: undefined },
+        //     dialogOpen: false,
+        //     posts: []
+        // }
+
+        this.state = this.getInitialState();
 
         this.handleClose = this.handleClose.bind(this);
         this.handleToggle = this.handleToggle.bind(this);
     }
 
+    getInitialState = () => ({
+        data: {
+            text: '',
+            feeling: '',
+            place: '',
+            style: '',
+            imageUri: '',
+            fileUri: '',
+            author: this.props.user
+        },
+        errors: {},
+        image: { name: '', value: undefined },
+        docFile: { name: '', value: undefined },
+        dialogOpen: false,
+        posts: []
+    })
+
     componentDidMount() {
         this._isMounted = true;
-        this.fetchData(this.state.pageFriendsState);
+        this.fetchData(this._isMounted);
     }
 
     componentWillUnmount() {
         this._isMounted = false;
     }
 
+    refreshView() {
+        this.setState(this.getInitialState());
+        this.fetchData(this._isMounted);
+    }
+
     fetchData(mountStatus = true) {
-        if(mountStatus){
+        if (mountStatus) {
             getPosts().then(response => {
                 console.log(response);
-               
+
                 if (mountStatus) {
-                    this.setState({posts: response.data})
+                    this.setState({ posts: response.data});
                 }
             }
             ).catch(err => {
@@ -94,7 +118,7 @@ class ProfilePosts extends Page {
             //     pathname: this.state.redirectUrl
             // });
 
-            if(this.state.image.value){
+            if (this.state.image.value) {
                 let formData = new FormData();
                 const file = this.state.image.value;
                 formData.append('file', file, file.name);
@@ -116,7 +140,7 @@ class ProfilePosts extends Page {
                 // });
             }
 
-            if(this.state.docFile.value){
+            if (this.state.docFile.value) {
                 let formDocData = new FormData();
                 const docFile = this.state.docFile.value;
                 formDocData.append('file', docFile, docFile.name);
@@ -128,10 +152,12 @@ class ProfilePosts extends Page {
                     console.log(err);
                 });
             }
+
+            this.refreshView();
         })
-        .catch(err => {
-            console.log(err);
-        });
+            .catch(err => {
+                console.log(err);
+            });
     }
 
     handleClose() {
@@ -180,7 +206,6 @@ class ProfilePosts extends Page {
                             color="primary"
                             startIcon={<SearchIcon />}
                             variant="outlined"
-                            // onClick={this.viewImage}
                         >
                             {strings.post.form.search}
                         </Button>
@@ -190,59 +215,12 @@ class ProfilePosts extends Page {
                 {
                     this.state.posts.map(post => {
 
-                        return(
-                            <PostDetail key={post.id} post={post} user={this.props.user}  />
-                            // <Box mt={2} key={post.id}>
-                            //     <Card className="postContainer">
-                            //         <CardContent>
-                            //             <Grid container
-                            //                 style={{
-                            //                     backgroundColor: post.style ? post.style : 'white',
-                            //                 }}
-                            //             >
-                            //                 <Grid item md={3} >
-                            //                     <Avatar 
-                            //                         alt={post.author.firstName} 
-                            //                         src={"imageSrc"} 
-                            //                         // className={classes.avatar} 
-                            //                         />
-                            //                 </Grid>
-                            //                 <Grid item md={9} >
-                            //                     <Paper >
-                            //                         <Grid container >
-                            //                             <Grid item md={12} >
-                            //                                 <Typography variant="subtitle1" >
-                            //                                     {post.author.firstName} {post.author.lastName}
-                            //                                     {post.feeling && <b> is feeling {post.feeling}</b>}
-                            //                                     {post.place && <i> at place {post.place}</i>}
-                            //                                 </Typography>
-                            //                             </Grid>
-                            //                             <Grid item md={12} >
-                            //                                 <Typography variant="subtitle2" >
-                            //                                     Posted 2h ago                                                                
-                            //                                 </Typography>
-                            //                             </Grid>
-                            //                         </Grid>
-                            //                     </Paper>
-                            //                 </Grid>
-                            //             </Grid>
-                            //             <Typography variant="h5" component="h2">
-                            //                 {strings.profile.posts}
-                            //             </Typography>
-                            //         </CardContent>
-                            //         <CardActions>
-                            //             <Button
-                            //                 // size="small"
-                            //                 color="primary"
-                            //                 startIcon={<AddIcon />}
-                            //                 variant="outlined"
-                            //                 onClick={this.handleToggle}
-                            //             >
-                            //                 {strings.post.form.title}
-                            //             </Button>
-                            //         </CardActions>
-                            //     </Card>
-                            // </Box>
+                        return (
+                            <PostDetail
+                                key={post.id}
+                                post={post}
+                                user={this.props.user}
+                                refreshView={() => this.refreshView()} />
                         )
                     })
                 }

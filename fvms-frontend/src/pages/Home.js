@@ -18,14 +18,6 @@ class Home extends Page {
         super(props);
 
         this.props.changeFullScreen(false);
-        // this.props.enqueueSnackbar('I love snacks.');
-        // this.props.enqueueSnackbar('I love snacks.');
-        // this.props.enqueueSnackbar('I love snacks.');
-
-        if (!this.props.user) {
-            console.log('idi na login');
-            this.props.history.push('/login');
-        }
     }
 
     render() {

@@ -11,6 +11,7 @@ import Lock from "./pages/user/Lock";
 import UserList from "./pages/admin/users/UserList";
 import SignUp from "./pages/user/SignUp";
 import Profile from "./pages/user/profile/Profile";
+import Chat from "./pages/user/profile/chat/Chat";
 import TablePage from "./common/TablePage";
 import ProfileSettings from './pages/user/profile/settings/ProfileSettings';
 
@@ -58,6 +59,11 @@ let ROUTES = {
     Profile: {
         path: '/profile',
         component: <Profile />,
+        auth: true
+    },
+    Chat: {
+        path: '/chat',
+        component: <Chat />,
         auth: true
     },
     Settings: {

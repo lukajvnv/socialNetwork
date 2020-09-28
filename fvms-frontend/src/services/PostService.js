@@ -6,6 +6,10 @@ export async function post(data) {
     return await request('/post', data, HttpMethod.POST);
 }
 
+export async function postComment(data) {
+    return await request('/post/comment', data, HttpMethod.POST);
+}
+
 export async function getPosts(data) {
     return await request('/post/all');
 }

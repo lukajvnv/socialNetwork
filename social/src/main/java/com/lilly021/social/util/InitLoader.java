@@ -45,16 +45,18 @@ public class InitLoader implements ApplicationRunner {
 //        messageTest();
 //        friendshipTest();
 //        postTest();
-        userTest();
+//        userTest();
+//        passTest();
     }
 
-
-    private void messageTest(){
-        List<String> passwords = Arrays.asList(new String[]{"admin1234", "user1", "user2", "user3"});
+    private void passTest(){
+        List<String> passwords = Arrays.asList(new String[]{"admin1234", "user1", "user2", "user3", "user4", "user5"});
         for(String pass: passwords){
             System.out.println(userPasswordEncoder.encode(pass));
         }
+    }
 
+    private void messageTest(){
         List<MessageDto> msg = messageService.getMessagesWith("user1@gmail.com", "user2@gmail.com");
         List<MessageDto> msgs = messageService.getAllMessageFriend("user2@gmail.com");
 
