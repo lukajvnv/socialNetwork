@@ -19,7 +19,7 @@ const LoginForm = ({
 }) => (
     <form id="login-form" onSubmit={onSubmit} action="#">
       <Box mt={2} border={1} borderRadius={16} className="mediaContainer">
-        <Grid spacing={2}>
+        <Grid >
           <Box m={2}>
             <Grid item >
               <Typography variant="h6" component="h6" gutterBottom align="center">
@@ -69,7 +69,7 @@ const LoginForm = ({
       />
 
       <Box mt={2}>
-        <Grid spacing={2}>
+        <Grid>
           <Box mt={2}>
             <Grid item >
               <Link href="#" to={'/#'} onClick={(event) => event.preventDefault()}>

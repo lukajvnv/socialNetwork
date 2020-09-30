@@ -25,7 +25,12 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const FriendDetail = ({ friend, friendPageState, friendshipId, updateFriendship }) => {
+const FriendDetail = ({ 
+    friend, 
+    friendPageState, 
+    friendshipId, 
+    updateFriendship,
+    displayLoggedUser }) => {
   const classes = useStyles();
 
   const onActionClick = (action) => {
@@ -42,9 +47,12 @@ const FriendDetail = ({ friend, friendPageState, friendshipId, updateFriendship 
         <Typography variant="subtitle1" color="textSecondary" component="p">
           {friend.firstName} {friend.lastName}
         </Typography>
-        <Box m={5} component="div">
-          <FriendDetailActionDialog friendPageState={friendPageState} onActionClick={onActionClick} />
-        </Box>
+        {
+          displayLoggedUser &&
+            <Box m={5} component="div">
+              <FriendDetailActionDialog friendPageState={friendPageState} onActionClick={onActionClick} />
+            </Box>
+        }
       </Paper>
     </Grid>
   );

@@ -2,6 +2,7 @@ package com.lilly021.social.service;
 
 import com.lilly021.social.converters.PostConverter;
 import com.lilly021.social.dto.post.CommentDto;
+import com.lilly021.social.dto.post.PageblePostDto;
 import com.lilly021.social.dto.post.PostDto;
 import com.lilly021.social.dto.user.UserDto;
 import com.lilly021.social.model.post.Comment;
@@ -11,6 +12,9 @@ import com.lilly021.social.repository.CommentRepository;
 import com.lilly021.social.repository.PostRepository;
 import com.lilly021.social.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -37,6 +41,12 @@ public class PostService implements ServiceInterface<Post, PostDto, Long> {
     public List<PostDto> getAll() {
         List<Post> posts = postRepository.findAllByOrderByIdDesc();
         return posts.stream().map(this::convertToDto).collect(Collectors.toList());
+    }
+
+    public List<PostDto> getAll(int i) {
+        PageRequest request = PageRequest.of(1, 3, Sort.by("id").descending());
+        Page<Post> posts = postRepository.findAll(request);
+        return posts.getContent().stream().map(this::convertToDto).collect(Collectors.toList());
     }
 
     @Override
@@ -76,16 +86,31 @@ public class PostService implements ServiceInterface<Post, PostDto, Long> {
         return userPosts;
     }
 
-    public List<PostDto> getFriendsPosts(String user, List<String> friends){
+    public PageblePostDto getFriendsPosts(String user, List<String> friends, String pageStr, String perPageStr){
         List<PostDto> allPosts = getAll();
         List<PostDto> postDtos = new ArrayList<>();
+        List<PostDto> pageblePostDtos = new ArrayList<>();
 
         for(PostDto dto: allPosts){
             if(friends.contains(dto.getAuthor().getEmail())){
                 postDtos.add(dto);
             }
         }
-        return postDtos;
+
+        int page = pageStr.isEmpty() ? 1 : Integer.parseInt(pageStr);
+        int perPage = perPageStr.isEmpty() ? postDtos.size() : Integer.parseInt(perPageStr);
+        int size = postDtos.size();
+        int from = (page-1) * page;
+        int to = from + perPage;
+        to = to >= size ? size : to;
+        if(perPage > size) {
+            from = 0;
+            to = size;
+        }
+        pageblePostDtos = postDtos.subList(from, to);
+        int pages = (int)Math.ceil(size /(double)perPage);
+        PageblePostDto pageblePostDto = new PageblePostDto(pageblePostDtos, pages);
+        return pageblePostDto;
     }
 
     public CommentDto convertToDto(Comment object, Long post) {

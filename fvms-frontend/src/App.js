@@ -3,6 +3,7 @@ import {Router} from "react-router-dom";
 import { createStore } from "redux";
 import appReducers from "./reducers/Reducers";
 import {loadUser} from "./actions/AuthActions";
+import {fetchFriendsStorage} from "./actions/FriendsActions";
 import history from "./history";
 import AuthWrapper from "./base/AuthWrapper";
 import {getRoutes} from "./route";
@@ -21,6 +22,7 @@ console.log("theme");
 
 const store = createStore(appReducers);
 store.dispatch(loadUser());
+store.dispatch(fetchFriendsStorage());
 
 if ('ontouchstart' in document.documentElement) {
     document.body.style.cursor = 'pointer';

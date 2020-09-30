@@ -13,6 +13,8 @@ let CONFIG = {
     linkedInClientId: 'LINKEDIN_CLIENT_ID',
     linkedInCliendSecret: 'LINKEDIN_CLIENT_SECRET',
     rowsPerPage: [ 5, 10, 25 ],
+    perPage: 2,
+    pages: 3,
     rolesAllowed: ['ROLE_USER', 'ROLE_ADMIN', 'ROLE_SUPER_ADMIN']
 };
 

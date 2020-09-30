@@ -1,8 +1,9 @@
-import React, {Component} from 'react'
-import {bindActionCreators} from "redux";
-import {Link, withRouter} from "react-router-dom";
-import {connect} from "react-redux";
+import React, { Component } from 'react'
+import { bindActionCreators } from "redux";
+import { Link, withRouter } from "react-router-dom";
+import { connect } from "react-redux";
 import MenuState from "../constants/MenuState";
+import HomeIcon from '@material-ui/icons/Home';
 
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
@@ -13,11 +14,14 @@ import FacebookIcon from '@material-ui/icons/Facebook';
 import ExpandLess from '@material-ui/icons/ExpandLess';
 import ExpandMore from '@material-ui/icons/ExpandMore';
 import Collapse from '@material-ui/core/Collapse';
-import {Drawer} from "@material-ui/core";
-
-import {request} from '../base/HTTP';
-import HttpMethod from '../constants/HttpMethod';
+import { Drawer } from "@material-ui/core";
 import IconButton from "@material-ui/core/IconButton";
+import SettingsIcon from '@material-ui/icons/Settings';
+import PersonIcon from '@material-ui/icons/Person';
+import ChatBubbleIcon from '@material-ui/icons/ChatBubble';
+import AccountBoxIcon from '@material-ui/icons/AccountBox';
+
+import strings from "../localization";
 
 class Navigation extends Component {
 
@@ -30,13 +34,11 @@ class Navigation extends Component {
                 example: false
             }
         };
-
-        this.test = this.test.bind(this);
     }
 
     getNavigationClass() {
 
-        if(this.props.menu.state === MenuState.SHORT) {
+        if (this.props.menu.state === MenuState.SHORT) {
             return 'navigation-content-container short';
         }
         else {
@@ -59,124 +61,92 @@ class Navigation extends Component {
         });
     }
 
-    test() { 
-        // request('http://localhost:8081/test/hello',{email: 'fdjlk'}, HttpMethod.POST).then((response) => {
-        //     console.log(response);
-        // });
-
-        fetch('http://localhost:8081/resource/doc/name/IT_kratak_pregled.pdf')
-			.then(response => {
-				response.blob().then(blob => {
-					let url = window.URL.createObjectURL(blob);
-					let a = document.createElement('a');
-					a.href = url;
-					a.download = 'employees.pdf';
-					a.click();
-				});
-				//window.location.href = response.url;
-		});
-    }
-
     render() {
 
         return (
             <Drawer variant="permanent" id='navigation'>
 
-                <div className={ this.getNavigationClass() }>
+                <div className={this.getNavigationClass()}>
                     <div className='logo-container'>
                         <div className='logo'>
                             <Link to={'/'}  >
                                 <IconButton>
                                     <FacebookIcon />
                                 </IconButton>
-                            </Link> 
+                            </Link>
                         </div>
                         <div className='title'>
                             <h2>Social network</h2>
                         </div>
-                    </div>                    
-
-                    <button onClick={this.test}>Test</button>
+                    </div>
                     <List component="nav">
-                        <Link to={'/profile'} className={ this.isCurrentPath('/profile') ? 'navigation-link active' : 'navigation-link'} >
+                        <Link to={'/'} className={this.isCurrentPath('/') ? 'navigation-link active' : 'navigation-link'} >
                             <ListItem className='navigation-item'>
 
                                 <ListItemIcon className='navigation-icon'>
-                                    <SendIcon/>
+                                    <HomeIcon />
                                 </ListItemIcon>
 
-                                <ListItemText inset primary={'Sent mail'} className='navigation-text'/>
+                                <ListItemText inset primary={strings.menu.Home} className='navigation-text' />
 
                             </ListItem>
                         </Link>
-                        <Link to={'/login'} className={ this.isCurrentPath('/login') ? 'navigation-link active' : 'navigation-link'} >
+                        <Link to={'/profile'} className={this.isCurrentPath('/profile') ? 'navigation-link active' : 'navigation-link'} >
                             <ListItem className='navigation-item'>
 
                                 <ListItemIcon className='navigation-icon'>
-                                    <SendIcon/>
+                                    <PersonIcon />
                                 </ListItemIcon>
 
-                                <ListItemText inset primary='Sent mail' className='navigation-text'/>
+                                <ListItemText inset primary={strings.profile.profile} className='navigation-text' />
 
                             </ListItem>
                         </Link>
-                        <Link to={'/table'} className={ this.isCurrentPath('/table') ? 'navigation-link active' : 'navigation-link'} >
+                        <Link to={'/settings'} className={this.isCurrentPath('/settings') ? 'navigation-link active' : 'navigation-link'} >
                             <ListItem className='navigation-item'>
 
                                 <ListItemIcon className='navigation-icon'>
-                                    <SendIcon/>
+                                    <SettingsIcon />
                                 </ListItemIcon>
 
-                                <ListItemText inset primary='Sent mail' className='navigation-text'/>
+                                <ListItemText inset primary={strings.profile.settings.title} className='navigation-text' />
 
                             </ListItem>
                         </Link>
-                        <Link to={'/'} className={ this.isCurrentPath('/') ? 'navigation-link active' : 'navigation-link'} >
+                        <Link to={'/chat'} className={this.isCurrentPath('/chat') ? 'navigation-link active' : 'navigation-link'} >
                             <ListItem className='navigation-item'>
 
                                 <ListItemIcon className='navigation-icon'>
-                                    <SendIcon/>
+                                    <ChatBubbleIcon />
                                 </ListItemIcon>
 
-                                <ListItemText inset primary='Sent mail' className='navigation-text'/>
+                                <ListItemText inset primary={strings.chat.title} className='navigation-text' />
 
                             </ListItem>
                         </Link>
-                        <ListItem className='navigation-item' button onClick={ () => this.toggleSubmenu('example') } >
+                        <ListItem className='navigation-item' button onClick={() => this.toggleSubmenu('example')} >
+
                             <ListItemIcon className='navigation-icon'>
-                                <SendIcon/>
+                                <AccountBoxIcon />
                             </ListItemIcon>
 
-                            <ListItemText inset primary='Sent mail' className='navigation-text'/>
-                            { this.state.submenu.example ? <ExpandLess className='navigation-icon'/> : <ExpandMore className='navigation-icon'/> }
+                            <ListItemText inset primary={strings.profile.other} className='navigation-text' />
+                            {this.state.submenu.example ? <ExpandLess className='navigation-icon' /> : <ExpandMore className='navigation-icon' />}
                         </ListItem>
-                        <Collapse in={ this.state.submenu.example } timeout="auto" unmountOnExit>
+                        <Collapse in={this.state.submenu.example} timeout="auto" unmountOnExit>
                             <List component="div" disablePadding className='submenu'>
-                                <Link to={'/'} className={ this.isCurrentPath('/') ? 'navigation-link active' : 'navigation-link'} >
+                                <Link to={'/'} className={this.isCurrentPath('/') ? 'navigation-link active' : 'navigation-link'} >
                                     <ListItem className='navigation-item'>
-
                                         <ListItemIcon className='navigation-icon'>
-                                            <SendIcon/>
+                                            <SendIcon />
                                         </ListItemIcon>
-
-                                        <ListItemText inset primary='Sent mail' className='navigation-text'/>
-
+                                        <ListItemText inset primary='Sent mail' className='navigation-text' />
                                     </ListItem>
                                 </Link>
-                                <Link to={'/'} className={ this.isCurrentPath('/') ? 'navigation-link active' : 'navigation-link'} >
-                                    <ListItem className='navigation-item'>
-
-                                        <ListItemIcon className='navigation-icon'>
-                                            <SendIcon/>
-                                        </ListItemIcon>
-
-                                        <ListItemText inset primary='Sent mail' className='navigation-text'/>
-
-                                    </ListItem>
-                                </Link>
+                                
                             </List>
                         </Collapse>
-                        
+
                     </List>
                 </div>
 
@@ -187,13 +157,11 @@ class Navigation extends Component {
     }
 }
 
-function mapDispatchToProps(dispatch)
-{
+function mapDispatchToProps(dispatch) {
     return bindActionCreators({}, dispatch);
 }
 
-function mapStateToProps({ menuReducers, authReducers })
-{
+function mapStateToProps({ menuReducers, authReducers }) {
     return { menu: menuReducers, auth: authReducers };
 }
 

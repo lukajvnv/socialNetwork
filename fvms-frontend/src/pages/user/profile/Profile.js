@@ -27,7 +27,7 @@ class Profile extends Page {
         this.props.changeFullScreen(true);
 
         this.state = {
-            currentTab: PageProfileState.Posts
+            currentTab: PageProfileState.Info,
         };
 
         this.selectTab = this.selectTab.bind(this);
@@ -54,7 +54,6 @@ class Profile extends Page {
         return this.state.currentTab == tab;
     }
 
-
     getContentClass() {
 
         if (this.props.menu.state === MenuState.SHORT) {
@@ -70,21 +69,39 @@ class Profile extends Page {
         return (
             <div id='profile-container'>
                 <div className='navigation-container'>
-                    <ProfileNavigation onItemClick={this.selectTab} currentTab={this.state.currentTab} />
+                    <ProfileNavigation 
+                        onItemClick={this.selectTab} 
+                        currentTab={this.state.currentTab} 
+                        user={this.props.user}
+                        displayLoggedUser={true}
+                    />
                 </div>
                 <div className={this.getContentClass()}>
                     <Header />
                     {
-                        this.state.currentTab === PageProfileState.Info && <ProfileInformation goToTab={(newTabState) => this.selectTab(newTabState)}/>
+                        this.state.currentTab === PageProfileState.Info && 
+                            <ProfileInformation 
+                                goToTab={(newTabState) => this.selectTab(newTabState)}
+                                user={this.props.user}
+                                displayLoggedUser={true}
+                            />
                     }
                     {
-                        this._isMounted && this.state.currentTab === PageProfileState.Friends && <ProfileFriends user={this.props.user} />
+                        this._isMounted && this.state.currentTab === PageProfileState.Friends && 
+                            <ProfileFriends 
+                                user={this.props.user} 
+                                displayLoggedUser={true}
+                            />
                     }
                     {
                         this.state.currentTab === PageProfileState.Photos && <ProfilePhotos />
                     }
                     {
-                        this.state.currentTab === PageProfileState.Posts && <ProfilePosts />
+                        this.state.currentTab === PageProfileState.Posts && 
+                            <ProfilePosts 
+                                user={this.props.user}
+                                displayLoggedUser={true}
+                            />
                     }
                     {
                         this._isMounted && this.state.currentTab === PageProfileState.Edit && <ProfileEdit goToTab={(newTabState) => this.selectTab(newTabState)} />

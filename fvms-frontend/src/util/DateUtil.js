@@ -80,7 +80,8 @@ export function farFromNow(dateString) {
         if(duration.asHours() < 1) {
             const durationAsMinutes = Math.floor(duration.asMinutes());
             if(durationAsMinutes < 1) {
-                return Math.floor(duration.asSeconds()) + ' seconds';
+                const seconds = Math.floor(duration.asSeconds());
+                return (seconds > 0 ? seconds: 0) + ' seconds';
             } else {
                 return durationAsMinutes + ' minutes ';
             }

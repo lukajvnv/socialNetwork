@@ -9,6 +9,10 @@ export async function updateUser(data) {
     return await request('/user', data, HttpMethod.POST);
 }
 
+export async function getUser(id) {
+    return await request('/user/' + id);
+}
+
 export async function resetPasswordRequest(data) {
     return await request('/api/users/password/reset', data, HttpMethod.POST);
 }

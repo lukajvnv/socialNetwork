@@ -22,7 +22,6 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import Divider from '@material-ui/core/Divider';
 import { postComment } from '../../../../services/PostService';
 
-
 const useStyles = makeStyles((theme) => ({
     dialog: {
         backgroundColor: theme.palette.primary,
@@ -88,7 +87,7 @@ const PostDetail = ({
         setCommentsDisp(!commentsDisp);
     };
 
-    const test = (fileName) => {
+    const docUpdate = (fileName) => {
         fetch('http://localhost:8081/resource/doc/name/' + fileName)
             .then(response => {
                 response.blob().then(blob => {
@@ -102,21 +101,29 @@ const PostDetail = ({
             });
     }
 
+    const keyPress = (event) => {
+        if(event.key == 'Enter') {
+            sendComment();
+        }
+    }
+
     const sendComment = () => {
-        const newComment = {
-            post: post.id,
-            text: comment,
-            author: user
+        if(comment){
+            const newComment = {
+                post: post.id,
+                text: comment,
+                author: user
+            }
+            postComment(newComment).then(response => {
+                console.log(response);
+                setComment('');
+                setCommentFormDisp(false);
+                refreshView();
+            }
+            ).catch(err => {
+                console.log(err);
+            });
         }
-        postComment(newComment).then(response => {
-            console.log(response);
-            setComment('');
-            setCommentFormDisp(false);
-            refreshView();
-        }
-        ).catch(err => {
-            console.log(err);
-        });
     }
 
     const changeCommentText = (event) => {
@@ -128,6 +135,7 @@ const PostDetail = ({
     const imageSrc = imageName ? CONFIG.imageUrlRegistry + imageName : undefined;
 
     const profileImageSrc = post.author.urlProfile ? CONFIG.imageUrlRegistry + post.author.urlProfile : undefined;
+    const commentAuthorImageSrc = user.urlProfile ? CONFIG.imageUrlRegistry + user.urlProfile : undefined;
 
     return (
         <Box mt={2} key={post.id}>
@@ -156,7 +164,6 @@ const PostDetail = ({
                                     </Grid>
                                     <Grid item md={12} >
                                         <Typography variant="subtitle2" component="i">
-                                            {/* Posted 2h ago                                                                 */}
                                             Posted {farFromNow(post.postTime)} ago
                                         </Typography>
                                     </Grid>
@@ -168,7 +175,6 @@ const PostDetail = ({
                         <Paper >
                             <Typography variant="h5"
                                 style={{
-                                    // backgroundColor: post.style ? post.style : 'white',
                                     color: post.style ? post.style : 'black'
                                 }}
                             >
@@ -193,7 +199,7 @@ const PostDetail = ({
                             <Button
                                 href="#text-buttons"
                                 color="primary"
-                                onClick={() => test(post.fileUri)}>
+                                onClick={() => docUpdate(post.fileUri)}>
                                 {post.fileUri}
                             </Button>
                         </Grid>
@@ -205,7 +211,6 @@ const PostDetail = ({
                         color="primary"
                         startIcon={<ThumbUpAltIcon />}
                         variant="outlined"
-                    // onClick={toggleCommentDisp}
                     >
                         {strings.post.like}
                     </Button>
@@ -239,16 +244,15 @@ const PostDetail = ({
                         <Grid item md={2} >
                             <Box p={2}>
                                 <Avatar
-                                    alt={post.author.firstName}
-                                    src={profileImageSrc}
+                                    alt={user.firstName}
+                                    src={commentAuthorImageSrc}
                                 />
                             </Box>
                         </Grid>
                         <Grid item md={8} >
                             <TextField
-                                // helperText={getError(errors, 'text')}
                                 onChange={changeCommentText}
-                                // onKeyPress={keyPress}
+                                onKeyPress={keyPress}
                                 value={comment}
                                 fullWidth
                                 autoFocus

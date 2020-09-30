@@ -3,6 +3,7 @@ package com.lilly021.social.util;
 import com.lilly021.social.dto.friend.FriendshipDto;
 import com.lilly021.social.dto.friend.MessageDto;
 import com.lilly021.social.dto.post.CommentDto;
+import com.lilly021.social.dto.post.PageblePostDto;
 import com.lilly021.social.dto.post.PostDto;
 import com.lilly021.social.dto.user.UserDto;
 import com.lilly021.social.dto.user.UserSettingDto;
@@ -44,7 +45,7 @@ public class InitLoader implements ApplicationRunner {
     public void run(ApplicationArguments args) throws Exception {
 //        messageTest();
 //        friendshipTest();
-//        postTest();
+        postTest();
 //        userTest();
 //        passTest();
     }
@@ -114,9 +115,9 @@ public class InitLoader implements ApplicationRunner {
 
     private void postTest(){
         List<String> friendList = friendshipService.getAcceptedFriendsList("user1@gmail.com");
-        List<PostDto> friendsPosts = postService.getFriendsPosts("user1@gmail.com", friendList);
+//        PageblePostDto friendsPosts = postService.getFriendsPosts("user1@gmail.com", friendList, "", "");
 
-        List<PostDto> postDtos = postService.getAll();
+//        List<PostDto> postDtos = postService.getAll(1);
 
         // new post
         PostDto post = PostDto
@@ -129,22 +130,22 @@ public class InitLoader implements ApplicationRunner {
                 .author(UserDto.builder().email("user2@gmail.com").build())
                 .build();
 
-        PostDto postDto = postService.save(post);
-
-        List<PostDto> userPostsBefore = postService.getUserPosts("user2@gmail.com");
-
-        // new comment
-        CommentDto commentDto = CommentDto
-                .builder()
-                .text("New comment by user3 post3")
-                .commentTime(new Date())
-                .author(UserDto.builder().email("user3@gmail.com").build())
-                .post(3l)
-                .build();
-
-        CommentDto commentDto1 = postService.save(commentDto);
-
-        List<PostDto> userPostsAfter = postService.getUserPosts("user2@gmail.com");
+//        PostDto postDto = postService.save(post);
+//
+//        List<PostDto> userPostsBefore = postService.getUserPosts("user2@gmail.com");
+//
+//        // new comment
+//        CommentDto commentDto = CommentDto
+//                .builder()
+//                .text("New comment by user3 post3")
+//                .commentTime(new Date())
+//                .author(UserDto.builder().email("user3@gmail.com").build())
+//                .post(3l)
+//                .build();
+//
+//        CommentDto commentDto1 = postService.save(commentDto);
+//
+//        List<PostDto> userPostsAfter = postService.getUserPosts("user2@gmail.com");
 
     }
 

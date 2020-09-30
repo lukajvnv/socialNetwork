@@ -11,20 +11,14 @@ import { withSnackbar } from "notistack";
 import Validators from "../../../../constants/ValidatorTypes";
 import { post } from '../../../../services/PostService';
 import { uploadPdfFile, uploadImage } from '../../../../services/ResourceSevice';
-import { getUserPosts, getPosts } from '../../../../services/PostService';
+import { getUserPosts } from '../../../../services/PostService';
 import Card from '@material-ui/core/Card';
-import CardActionArea from '@material-ui/core/CardActionArea';
 import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
-import CardMedia from '@material-ui/core/CardMedia';
 import Typography from '@material-ui/core/Typography';
-import Box from '@material-ui/core/Box';
 import strings from '../../../../localization';
 import AddIcon from '@material-ui/icons/Add';
 import SearchIcon from '@material-ui/icons/Search';
-import Grid from '@material-ui/core/Grid';
-import Paper from '@material-ui/core/Paper';
-import Avatar from '@material-ui/core/Avatar';
 import PostDetail from './PostDetail';
 
 class ProfilePosts extends Page {
@@ -36,23 +30,6 @@ class ProfilePosts extends Page {
 
     constructor(props) {
         super(props);
-
-        // this.state = {
-        //     data: {
-        //         text: '',
-        //         feeling: '',
-        //         place: '',
-        //         style: '',
-        //         imageUri: '',
-        //         fileUri: '',
-        //         author: props.user
-        //     },
-        //     errors: {},
-        //     image: { name: '', value: undefined },
-        //     docFile: { name: '', value: undefined },
-        //     dialogOpen: false,
-        //     posts: []
-        // }
 
         this.state = this.getInitialState();
 
@@ -92,8 +69,9 @@ class ProfilePosts extends Page {
     }
 
     fetchData(mountStatus = true) {
+        const friendEmail = this.props.displayLoggedUser ? '' : this.props.user.email;
         if (mountStatus) {
-            getPosts().then(response => {
+            getUserPosts(friendEmail).then(response => {
                 console.log(response);
 
                 if (mountStatus) {
@@ -114,10 +92,6 @@ class ProfilePosts extends Page {
         post(this.state.data).then(response => {
             console.log(response);
 
-            // this.props.history.push({
-            //     pathname: this.state.redirectUrl
-            // });
-
             if (this.state.image.value) {
                 let formData = new FormData();
                 const file = this.state.image.value;
@@ -129,15 +103,6 @@ class ProfilePosts extends Page {
                 ).catch(err => {
                     console.log(err);
                 });
-
-                // formData.append('resourceType', 'IMAGE');
-                // formData.append('post', response.data.id);
-                // uploadPostImage(formData).then(response => {
-                //     console.log(response);
-                // }
-                // ).catch(err => {
-                //     console.log(err);
-                // });
             }
 
             if (this.state.docFile.value) {
@@ -161,7 +126,7 @@ class ProfilePosts extends Page {
     }
 
     handleClose() {
-        this.setState({ dialogOpen: false });
+        this.refreshView();
     };
 
     handleToggle() {
@@ -170,6 +135,7 @@ class ProfilePosts extends Page {
     };
 
     render() {
+        const friendHeaderTitle = this.props.user.firstName + '\'s posts';
 
         return (
             <div>
@@ -188,28 +154,24 @@ class ProfilePosts extends Page {
                 <Card className="postContainer">
                     <CardContent>
                         <Typography variant="h5" component="h2">
-                            {strings.profile.posts}
+                            {this.props.displayLoggedUser && strings.profile.posts}
+                            {!this.props.displayLoggedUser && friendHeaderTitle}
                         </Typography>
                     </CardContent>
-                    <CardActions>
-                        <Button
-                            // size="small"
-                            color="primary"
-                            startIcon={<AddIcon />}
-                            variant="outlined"
-                            onClick={this.handleToggle}
-                        >
-                            {strings.post.form.title}
-                        </Button>
-                        <Button
-                            // size="small"
-                            color="primary"
-                            startIcon={<SearchIcon />}
-                            variant="outlined"
-                        >
-                            {strings.post.form.search}
-                        </Button>
-                    </CardActions>
+                    {
+                        this.props.displayLoggedUser && 
+                        <CardActions>
+                            <Button
+                                color="primary"
+                                startIcon={<AddIcon />}
+                                variant="outlined"
+                                onClick={this.handleToggle}
+                            >
+                                {strings.post.form.title}
+                            </Button>
+                        </CardActions>
+                    }
+                    
                 </Card>
 
                 {
@@ -219,7 +181,7 @@ class ProfilePosts extends Page {
                             <PostDetail
                                 key={post.id}
                                 post={post}
-                                user={this.props.user}
+                                user={this.props.loggedUser}
                                 refreshView={() => this.refreshView()} />
                         )
                     })
@@ -236,7 +198,7 @@ function mapDispatchToProps(dispatch) {
 }
 
 function mapStateToProps({ menuReducers, authReducers }) {
-    return { menu: menuReducers, user: authReducers.user };
+    return { menu: menuReducers, loggedUser: authReducers.user };
 }
 
 export default withSnackbar(withRouter(connect(mapStateToProps, mapDispatchToProps)(ProfilePosts)));

@@ -230,6 +230,15 @@ let strings = new LocalizedStrings({
             placeholder: 'Put your comment here',
             send: 'Send',
             plural: 'comments'
+        },
+        chat: {
+            title: 'Chat',
+            new: 'New message',
+            placeholder: 'Put your message here',
+            backAction: 'Back',
+            newAction: 'New',
+            selectPlaceholder: 'Friend\'s email',
+            dialogText: 'Type your friend\'s email to start chat.'
         }
     }
 });

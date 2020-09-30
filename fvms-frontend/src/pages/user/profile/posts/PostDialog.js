@@ -135,26 +135,18 @@ const PostDialog = ({
     data,
     imageFile,
     docFile,
-    keyPress,
 }) => {
     const classes = useStyles();
 
-    // const [open, setOpen] = React.useState(false);
     const open = shouldOpen;
     const [scroll, setScroll] = React.useState('paper');
     const [image, setImage] = React.useState(undefined);
     const [file, setFile] = React.useState(undefined);
 
-    // const [refresh, setRefresh] = React.useState(false);
-
-    //   const handleClickOpen = (scrollType) => () => {
-    //     setOpen(true);
-    //     setScroll(scrollType);
-    //   };
-
     const handleClose = () => {
-        // setOpen(false);
         if (closeAction) {
+            setImage(undefined);
+            setFile(undefined);
             closeAction();
         }
     };
@@ -175,7 +167,6 @@ const PostDialog = ({
     };
 
     const handleFeelingMenuItemClick = (event, index) => {
-        // setSelectedIndex(index);
         const emojiValue = options[index];
         data['feeling'] = emojiValue;
         setFeelingMenuAnchorEl(null);
@@ -228,7 +219,7 @@ const PostDialog = ({
         formData.append('file', file, file.name);
         const fileType = file.type;
         if (fileType !== FileFormat.pdf) {
-            snackbar(strings.profile.form.imageError, { variant: 'error' });
+            snackbar(strings.post.form.fileError, { variant: 'error' });
             return;
         }
 
@@ -241,8 +232,7 @@ const PostDialog = ({
         setFile(file);
     }
 
-
-    const imageName = user.urlProfile;
+    const imageName = user ? user.urlProfile : undefined;
     const imageSrc = imageName ? CONFIG.imageUrlRegistry + imageName : 'noImage';
     const [value, setValue] = React.useState(0);
 
@@ -319,6 +309,20 @@ const PostDialog = ({
                     </Link> */}
                     {/* <Link to={pdf} target="_blank" download>Download</Link> */}
                     <img className="profileImage" src={image} alt="" className={classes.image}></img>
+                    {
+                        file && <Grid
+                            item
+                            md={12}
+                        >
+                            <Button
+                                href="#text-buttons"
+                                color="primary"
+                                // onClick={() => docUpdate(post.fileUri)}
+                                >
+                                {file.name}
+                            </Button>
+                        </Grid>
+                    }
                     <Paper className={classes.buttonButtomHeader}>
                         <Button
                             size="small"

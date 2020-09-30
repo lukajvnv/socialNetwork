@@ -25,7 +25,7 @@ import PageFriendsState from "./PageFriendsState";
 
 import FriendActionTypes from "../../../../constants/FriendActionTypes";
 
-import { friends, allFriendships, suggestions, updateFriendship } from "../../../../services/FriendShipService";
+import { friends, allFriendships, suggestions, updateFriendship, makeFriendsList } from "../../../../services/FriendShipService";
 
 class ProfileFriends extends Component {
     _isMounted = false;
@@ -79,7 +79,11 @@ class ProfileFriends extends Component {
         let friendship;
 
         if (action == FriendActionTypes.View) {
-            return;
+            this.props.history.push({
+                pathname: '/friend',
+                search: `email=${friend.email}`
+           });
+           return;
         }
 
         if (action == FriendActionTypes.Delete) {
@@ -155,21 +159,17 @@ class ProfileFriends extends Component {
                 break;
             case PageFriendsState.Friends:
             default:
-                friends().then(response => {
+                const friendEmail = this.props.displayLoggedUser ? '' : this.props.user.email;
+                friends(friendEmail).then(response => {
                     console.log(response);
-                    const friends = [];
                     let user = this.props.user.email;
-                    for (let friendship of response.data) {
-                        let friend;
-                        if (user == friendship.receiver.email) {
-                            friend = friendship.sender;
-                        } else {
-                            friend = friendship.receiver;
-                        }
-                        friends.push({ friend: friend, id: friendship.id });
-                    }
+                    const refreshUserFriends = this.props.displayLoggedUser ? true : false;
+                    const friends = makeFriendsList(response.data, user, refreshUserFriends);
                     if (mountStatus) {
-                        this.setState({ friends, pageFriendsState: friendPageState });
+                        this.setState({ friends: friends, pageFriendsState: friendPageState });
+                        if(refreshUserFriends){
+                            this.getFriends(response.data);
+                        }
                     }
                 }
                 ).catch(err => {
@@ -179,39 +179,44 @@ class ProfileFriends extends Component {
     }
 
     render() {
+        const friendHeaderTitle = this.props.user.firstName + '\'s friends';
         return (
             <div>
+                {
+                    this.props.displayLoggedUser &&
+                    <Box mt={2}>
+                        <Card className="mediaContainer">
+                            <CardContent>
+                                <Typography variant="h5" component="h2">
+                                    {strings.profile.friends}
+                                </Typography>
+                            </CardContent>
+                                <CardActions>
+                                    <IconButton size="small" color="primary"
+                                        onClick={() => this.onProfileFriendsStateChanged(PageFriendsState.Friends)}
+                                    >
+                                        <InfoIcon />{strings.profile.friend.view}
+                                    </IconButton>
+                                    <IconButton size="small" color="primary"
+                                        onClick={() => this.onProfileFriendsStateChanged(PageFriendsState.New)}
+                                    >
+                                        <SearchIcon />{strings.profile.friend.new}
+                                    </IconButton>
+                                    <IconButton size="small" color="primary"
+                                        onClick={() => this.onProfileFriendsStateChanged(PageFriendsState.Request)}
+                                    >
+                                        <EmojiPeopleIcon />{strings.profile.friend.request}
+                                    </IconButton>
+                                </CardActions>
+                            </Card>
+                    </Box>
+                }
                 <Box mt={2}>
                     <Card className="mediaContainer">
                         <CardContent>
                             <Typography variant="h5" component="h2">
-                                {strings.profile.friends}
-                            </Typography>
-                        </CardContent>
-                        <CardActions>
-                            <IconButton size="small" color="primary"
-                                onClick={() => this.onProfileFriendsStateChanged(PageFriendsState.Friends)}
-                            >
-                                <InfoIcon />{strings.profile.friend.view}
-                            </IconButton>
-                            <IconButton size="small" color="primary"
-                                onClick={() => this.onProfileFriendsStateChanged(PageFriendsState.New)}
-                            >
-                                <SearchIcon />{strings.profile.friend.new}
-                            </IconButton>
-                            <IconButton size="small" color="primary"
-                                onClick={() => this.onProfileFriendsStateChanged(PageFriendsState.Request)}
-                            >
-                                <EmojiPeopleIcon />{strings.profile.friend.request}
-                            </IconButton>
-                        </CardActions>
-                    </Card>
-                </Box>
-                <Box mt={2}>
-                    <Card className="mediaContainer">
-                        <CardContent>
-                            <Typography variant="h5" component="h2">
-                                {this.friendStatusTitle[this.state.pageFriendsState]}
+                                {this.props.displayLoggedUser && this.friendStatusTitle[this.state.pageFriendsState]}
+                                {!this.props.displayLoggedUser && friendHeaderTitle}
                             </Typography>
                             <Grid container spacing={1} >
                                 {
@@ -223,6 +228,7 @@ class ProfileFriends extends Component {
                                             friend={friendship.friend}
                                             friendshipId={friendship.id}
                                             updateFriendship={(action) => this.updateFriendship(action, friendship.id, friendship.friend)}
+                                            displayLoggedUser={this.props.displayLoggedUser}
                                         />
                                     ))
                                 }
@@ -239,16 +245,17 @@ class ProfileFriends extends Component {
     }
 }
 
-// function mapDispatchToProps(dispatch) {
-//     return bindActionCreators({
-//         changeFullScreen: Actions.changeFullScreen
-//     }, dispatch);
-// }
-//
-// function mapStateToProps({ menuReducers, authReducers }) {
-//     return { menu: menuReducers, user: authReducers.user };
-// }
-//
-// export default withRouter(connect(mapStateToProps, mapDispatchToProps)(ProfileFriends));
+function mapDispatchToProps(dispatch) {
+    return bindActionCreators({
+        changeFullScreen: Actions.changeFullScreen,
+        getFriends: Actions.fetchFriends
+    }, dispatch);
+}
 
-export default ProfileFriends;
+function mapStateToProps({ menuReducers }) {
+    return { menu: menuReducers};
+}
+
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(ProfileFriends));
+
+// export default ProfileFriends;

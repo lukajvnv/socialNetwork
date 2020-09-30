@@ -94,7 +94,7 @@ public class FriendshipService implements ServiceInterface<Friendship, Friendshi
         User user = getUser(username);
         List<String> friendList = getAllFriendsList(username);
         friendList.add(user.getUsername());
-        List<User> users = userRepository.findAll();
+        List<User> users = userRepository.findByRole("ROLE_USER");
 
         List<UserDto> suggestions =  new ArrayList<>();
         for(User u: users){

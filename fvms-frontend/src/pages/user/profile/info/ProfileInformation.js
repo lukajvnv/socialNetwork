@@ -93,12 +93,31 @@ class ProfileInformation extends Component {
         });
     }
 
+    getUserSetting(settingId){
+        const setting = this.props.user.usersSettings.filter(uS => uS.setting.id === settingId)[0];
+        const settingValue = false;
+        if(setting){
+            if(setting.value === 'true'){
+                return true;
+            }
+        }
+        return settingValue;
+    }
+
     render() {
         const open = Boolean(this.state.imageAnchorEl);
         const id = open ? 'simple-popper' : undefined;
 
         const imageName = this.state.imageSrc;
         const imageSrc =  imageName ? CONFIG.imageUrlRegistry + imageName : noImage;
+
+        let showBirthday = true;
+        let showAddress = true;
+
+        if(!this.props.displayLoggedUser) {
+            showBirthday = this.getUserSetting(2);
+            showAddress = this.getUserSetting(3);
+        }
 
         return (
             <div >
@@ -122,15 +141,18 @@ class ProfileInformation extends Component {
                         </CardContent>
                     </CardActionArea>
                     <CardActions>
-                        <Button
-                            size="small"
-                            color="primary"
-                            startIcon={<EditIcon />}
-                            variant="outlined"
-                            onClick={() => this.props.goToTab(PageProfileState.Edit)}
-                        >
-                            {strings.profile.edit}
-                        </Button>
+                        {
+                            this.props.displayLoggedUser && 
+                                <Button
+                                    size="small"
+                                    color="primary"
+                                    startIcon={<EditIcon />}
+                                    variant="outlined"
+                                    onClick={() => this.props.goToTab(PageProfileState.Edit)}
+                                >
+                                    {strings.profile.edit}
+                                </Button>
+                        }
                         <Button
                             size="small"
                             color="primary"
@@ -140,20 +162,23 @@ class ProfileInformation extends Component {
                         >
                             {strings.profile.viewProfilePhoto}
                         </Button>
-                        <Button
-                            size="small"
-                            color="primary"
-                            startIcon={<AddAPhotoIcon />}
-                            component="label"
-                            variant="outlined"
-                        >
-                            {strings.profile.changeProfilePhoto}
-                            <input
-                                type="file"
-                                style={{ display: "none" }}
-                                onChange={this.onFileUpload}
-                            />
-                        </Button>
+                        {
+                            this.props.displayLoggedUser &&
+                            <Button
+                                size="small"
+                                color="primary"
+                                startIcon={<AddAPhotoIcon />}
+                                component="label"
+                                variant="outlined"
+                            >
+                                {strings.profile.changeProfilePhoto}
+                                <input
+                                    type="file"
+                                    style={{ display: "none" }}
+                                    onChange={this.onFileUpload}
+                                />
+                            </Button>
+                        }
                     </CardActions>
                 </Card>
                 <Popper id={id} open={open} anchorEl={this.state.imageAnchorEl} placement="bottom-start" transition>
@@ -177,11 +202,15 @@ class ProfileInformation extends Component {
                                     <Paper className='paper'>
                                         <Typography variant="body1" color="textPrimary" component="h5">
                                             {
-                                                this.props.user.birthday &&
+                                                this.props.user.birthday && showBirthday &&
                                                 reformatDate(this.props.user.birthday)
                                             }
                                             {
                                                 !this.props.user.birthday &&
+                                                "..."
+                                            }
+                                            {
+                                                !showBirthday &&
                                                 "..."
                                             }
                                         </Typography>
@@ -198,11 +227,15 @@ class ProfileInformation extends Component {
                                     <Paper className='paper'>
                                         <Typography variant="body1" color="textPrimary" component="h5">
                                             {
-                                                this.props.user.address &&
+                                                this.props.user.address && showAddress &&
                                                 this.props.user.address
                                             }
                                             {
                                                 !this.props.user.address &&
+                                                "..."
+                                            }
+                                            {
+                                                !showAddress &&
                                                 "..."
                                             }
                                         </Typography>
@@ -270,7 +303,7 @@ function mapDispatchToProps(dispatch) {
 }
 
 function mapStateToProps({ menuReducers, authReducers }) {
-    return { menu: menuReducers, user: authReducers.user };
+    return { menu: menuReducers };
 }
 
 export default withSnackbar(withRouter(connect(mapStateToProps, mapDispatchToProps)(ProfileInformation)));

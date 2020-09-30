@@ -194,10 +194,11 @@ class Autocomplete extends BaseControl {
 
     handleChange(event) {
 
-        this.setState({ selectedItem: event }, () => {
+        // this.setState({ selectedItem: event }, () => {
 
-            this.createEvent(event)
-        });
+        //     this.createEvent(event)
+        // });
+        this.setState({selectedItem: event.value});
     }
 
     render() {

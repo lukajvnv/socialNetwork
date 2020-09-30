@@ -14,6 +14,7 @@ import ExpandLess from '@material-ui/icons/ExpandLess';
 import ExpandMore from '@material-ui/icons/ExpandMore';
 import Collapse from '@material-ui/core/Collapse';
 import { Drawer } from "@material-ui/core";
+import ChatBubbleIcon from '@material-ui/icons/ChatBubble';
 
 import IconButton from "@material-ui/core/IconButton";
 import strings from "../../../localization";
@@ -29,12 +30,18 @@ import SettingsIcon from '@material-ui/icons/Settings';
 
 class ProfileNavigation extends Component {
 
-    simpleNavItems = [
+    simpleUserNavItems = [
         PageProfileState.Info,
         PageProfileState.Friends,
-        PageProfileState.Photos,
+        // PageProfileState.Photos,
         PageProfileState.Posts,
         PageProfileState.Edit
+    ];
+
+    simpleFriendNavItems = [
+        PageProfileState.Info,
+        PageProfileState.Friends,
+        PageProfileState.Posts,
     ];
 
     constructor(props) {
@@ -113,6 +120,7 @@ class ProfileNavigation extends Component {
     }
 
     render() {
+        const simpleNavItems = this.props.displayLoggedUser? this.simpleUserNavItems : this.simpleFriendNavItems;
 
         return (
             <Drawer variant="permanent" id='profile-navigation'>
@@ -126,26 +134,29 @@ class ProfileNavigation extends Component {
                             </Link>
                         </div>
                         <div className='title'>
-                            <h2>{this.props.auth.user.firstName} {this.props.auth.user.lastName}</h2>
+                            <h2>{this.props.user.firstName} {this.props.user.lastName}</h2>
                         </div>
                     </div>
                     <List component="nav">
                         {
-                            this.simpleNavItems
+                            simpleNavItems
                                 .map((data) => {
                                     return (
                                         this.renderSimpleNavItem(data)
                                     );
                                 }
-                                )}
-                        <ListItem className='navigation-item' button onClick={() => this.toggleSubmenu('example')} >
-                            <ListItemIcon className='navigation-icon'>
-                                <AccountBoxIcon />
-                            </ListItemIcon>
+                        )} 
+                        {
+                            this.props.displayLoggedUser && 
+                            <ListItem className='navigation-item' button onClick={() => this.toggleSubmenu('example')} >
+                                <ListItemIcon className='navigation-icon'>
+                                    <AccountBoxIcon />
+                                </ListItemIcon>
 
-                            <ListItemText inset primary={strings.profile.other} className='navigation-text' />
-                            {this.state.submenu.example ? <ExpandLess className='navigation-icon' /> : <ExpandMore className='navigation-icon' />}
-                        </ListItem>
+                                <ListItemText inset primary={strings.profile.other} className='navigation-text' />
+                                {this.state.submenu.example ? <ExpandLess className='navigation-icon' /> : <ExpandMore className='navigation-icon' />}
+                            </ListItem>
+                        }
                         <Collapse in={this.state.submenu.example} timeout="auto" unmountOnExit>
                             <List component="div" disablePadding className='submenu'>
                                 <Link to={'/settings'} >
@@ -156,15 +167,14 @@ class ProfileNavigation extends Component {
                                         <ListItemText inset primary={strings.profile.settings.title} className='navigation-text' />
                                     </ListItem>
                                 </Link>
-                                <ListItem className='navigation-item'>
-
-                                    <ListItemIcon className='navigation-icon'>
-                                        <SendIcon />
-                                    </ListItemIcon>
-
-                                    <ListItemText inset primary='Sent mail' className='navigation-text' />
-
-                                </ListItem>
+                                <Link to={'/chat'}>
+                                    <ListItem className='navigation-item'>
+                                        <ListItemIcon className='navigation-icon'>
+                                            <ChatBubbleIcon />
+                                        </ListItemIcon>
+                                        <ListItemText inset primary={strings.chat.title} className='navigation-text' />
+                                    </ListItem>
+                                </Link>
                             </List>
                         </Collapse>
 
@@ -183,7 +193,7 @@ function mapDispatchToProps(dispatch) {
 }
 
 function mapStateToProps({ menuReducers, authReducers }) {
-    return { menu: menuReducers, auth: authReducers };
+    return { menu: menuReducers };
 }
 
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(ProfileNavigation));

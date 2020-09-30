@@ -12,7 +12,7 @@ import Paper from '@material-ui/core/Paper';
 import LoginForm from "../../components/forms/user/LoginForm";
 import Validators from "../../constants/ValidatorTypes";
 import {login} from "../../base/OAuth";
-
+import { friends, makeFriendsList } from "../../services/FriendShipService";
 
 class Login extends Page {
 
@@ -64,6 +64,10 @@ class Login extends Page {
             }
 
             this.props.login(response.data);
+            
+            friends().then(response => {
+                this.props.getFriends(makeFriendsList(response.data, this.state.data.email, true));
+            });
 
             this.props.history.push({
                 pathname: this.state.redirectUrl
@@ -96,7 +100,8 @@ function mapDispatchToProps(dispatch)
 {
     return bindActionCreators({
         changeFullScreen: Actions.changeFullScreen,
-        login: Actions.login
+        login: Actions.login,
+        getFriends: Actions.fetchFriends
     }, dispatch);
 }
 

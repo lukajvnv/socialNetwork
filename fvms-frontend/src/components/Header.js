@@ -23,8 +23,7 @@ import ChatBubbleIcon from '@material-ui/icons/ChatBubble';
 import Badge from '@material-ui/core/Badge';
 import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
 import SettingsIcon from '@material-ui/icons/Settings';
-import NotificationsIcon from '@material-ui/icons/Notifications';
-import ProfileEdit from '../pages/user/profile/edit/ProfileEdit';
+import HomeIcon from '@material-ui/icons/Home';
 
 class Header extends Component {
 
@@ -71,25 +70,28 @@ class Header extends Component {
 
         return (
             <div id='header' className={this.getHeaderClass()}>
-
                 <div className='left'>
-
                     {
                         this.props.menu.state === MenuState.FULL &&
                         <IconButton size='small' onClick={() => this.props.changeMenuState(MenuState.SHORT)}>
                             <MoreVert />
                         </IconButton>
                     }
-
                     {
                         this.props.menu.state === MenuState.SHORT &&
                         <IconButton size='small' onClick={() => this.props.changeMenuState(MenuState.FULL)}>
                             <MenuIcon />
                         </IconButton>
                     }
-
                 </div>
                 <div className='right'>
+                    <Link to={"/"} >
+                        <Tooltip title={strings.menu.Home} aria-label="add" arrow>
+                            <IconButton color="primary">
+                                <HomeIcon />
+                            </IconButton>
+                        </Tooltip>
+                    </Link>
                     <Tooltip title="Add" aria-label="add" arrow>
                         <IconButton color="primary">
                             <AddIcon />
@@ -115,11 +117,11 @@ class Header extends Component {
                         </Tooltip>
                     </Link>
 
-                    <Badge badgeContent={4} color="primary" variant="dot">
+                    {/* <Badge badgeContent={4} color="primary" variant="dot">
                         <IconButton color="primary">
                             <NotificationsIcon />
                         </IconButton>
-                    </Badge>
+                    </Badge> */}
 
                     <IconButton
                         size="small"
@@ -137,12 +139,12 @@ class Header extends Component {
                         onClose={() => this.handleMenuClose()}
                     >
 
-                        <MenuItem onClick={() => this.lock()}>
+                        {/* <MenuItem onClick={() => this.lock()}>
                             <ListItemIcon>
                                 <LockIcon />
                             </ListItemIcon>
                             <ListItemText inset primary={strings.header.lock} />
-                        </MenuItem>
+                        </MenuItem> */}
                         <MenuItem onClick={() => this.logout()}>
                             <ListItemIcon>
                                 <ExitToAppIcon />

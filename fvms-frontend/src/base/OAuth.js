@@ -150,10 +150,18 @@ export function setUserToLocalStorage(user) {
     localStorage.setItem('user', JSON.stringify(user));
 }
 
-export function getUserFromLocalStorage() {
+export function setUserFriendsToLocalStorage(friends) {
+    localStorage.setItem('friends', JSON.stringify(friends));
+}
 
+export function getUserFromLocalStorage() {
     let user = localStorage.getItem('user');
     return user ? JSON.parse(user) : null;
+}
+
+export function getUserFriendsFromLocalStorage() {
+    let friends = localStorage.getItem('friends');
+    return friends ? JSON.parse(friends) : [];
 }
 
 export function setTokenToLocalStorage(access_token, refresh_token) {
@@ -175,6 +183,7 @@ export function setSocialTokenToLocalStorage(access_token) {
 
 export function clearUserData() {
     localStorage.removeItem('user');
+    localStorage.removeItem('friends');
     clearUserDataLock();
 }
 
