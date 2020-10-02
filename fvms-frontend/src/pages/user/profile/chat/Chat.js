@@ -15,6 +15,7 @@ import { getMessages, getMessagesWithUser } from "../../../../services/ChatServi
 import Grid from '@material-ui/core/Grid';
 import Divider from '@material-ui/core/Divider';
 import MenuState from "../../../../constants/MenuState";
+import SockJsClient from 'react-stomp';
 
 class Chat extends Page {
     _isMounted = false;
@@ -34,6 +35,9 @@ class Chat extends Page {
         }
 
         this.props.changeFullScreen(false);
+        this.sendMessage = this.sendMessage.bind(this);
+
+        this.props.chatSetNewCounterValue(0);
     }
 
     componentDidMount() {
@@ -43,7 +47,15 @@ class Chat extends Page {
 
     componentWillUnmount() {
         this._isMounted = false;
+        this.props.chatSetChatOpenedValue(false);
     }
+
+    sendMessage = () => {
+        this.clientRef.sendMessage('/app/user-all', JSON.stringify({
+            name: this.props.user.firstName,
+            message: 'New message'
+        }));
+    };
 
     // refreshView() {
     //     this.setState(this.getInitialState());
@@ -60,13 +72,6 @@ class Chat extends Page {
                 console.log(err);
             });
         }
-    }
-
-    postSubmit() {
-        if (!this.validate()) {
-            return;
-        }
-
     }
 
     getNavigationClass() {
@@ -91,6 +96,25 @@ class Chat extends Page {
             this.fetchData();
         }
     }
+
+    messageReceiver(msg){
+        const senderEmail = msg.sender.email;
+        const receiverEmail = msg.receiver.email;
+        if(this.state.activeFriend){
+            if(senderEmail === this.state.activeFriend.email && receiverEmail === this.props.user.email){
+                // console.log(msg);
+    
+                // let messages = this.state.userMessages;
+                // messages.push(msg);
+                // this.setState({userMessages: messages});
+
+                this.setActiveChat(this.state.activeFriend.email);
+            }
+        }
+        
+    }
+
+    compo
 
     render() {
         const friendsList = this.props.friends.map(f => { return f.friend; }
@@ -132,9 +156,28 @@ class Chat extends Page {
                             user={this.props.user}
                             friend={this.state.activeFriend}
                             setNewActiveChat={(val) => this.setActiveChat(val)}
+                            websocketClient={this.clientRef}
                         />
                     </Grid>
                 </Grid>
+                <SockJsClient url='http://localhost:8081/websocket-chat/'
+                              topics={['/topic/user']}
+                              onConnect={() => {
+                                  console.log("connected");
+                              }}
+                              onDisconnect={() => {
+                                  console.log("Disconnected");
+                              }}
+                            //   onMessage={(msg) => {
+                            //       var jobs = this.state.messages;
+                            //       jobs.push(msg);
+                            //       this.setState({messages: jobs});
+                            //       console.log(this.state);
+                            //   }}
+                            onMessage={(msg) => this.messageReceiver(msg)}
+                              ref={(client) => {
+                                  this.clientRef = client
+                              }}/>
             </div>
         );
     }
@@ -143,6 +186,8 @@ class Chat extends Page {
 function mapDispatchToProps(dispatch) {
     return bindActionCreators({
         changeFullScreen: Actions.changeFullScreen,
+        chatSetNewCounterValue: Actions.chatSetNewCounterValue,
+        chatSetChatOpenedValue: Actions.chatSetChatOpenedValue
     }, dispatch);
 }
 

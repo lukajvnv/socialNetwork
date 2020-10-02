@@ -13,7 +13,8 @@ import { postMessage } from '../../../../services/ChatService';
 const ChatForm = ({
     user,
     friend,
-    setNewActiveChat
+    setNewActiveChat,
+    websocketClient
 }) => {
 
     const profileImageSrc = user.urlProfile ? CONFIG.imageUrlRegistry + user.urlProfile : '';
@@ -21,21 +22,23 @@ const ChatForm = ({
     const [message, setMessage] = React.useState('');
 
     const sendMessage = () => {
-        const newMessage = {
-            receiver: friend,
-            text: message,
-            sender: user
+        if(friend){
+            const newMessage = {
+                receiver: friend,
+                text: message,
+                sender: user
+            }
+            postMessage(newMessage).then(response => {
+                console.log(response);
+                setMessage('');
+                // refreshView();
+                setNewActiveChat(friend.email);
+                websocketClient.sendMessage('/app/message', JSON.stringify(response.data));
+            }
+            ).catch(err => {
+                console.log(err);
+            });
         }
-        postMessage(newMessage).then(response => {
-            console.log(response);
-            setMessage('');
-            // refreshView();
-            setNewActiveChat(friend.email);
-
-        }
-        ).catch(err => {
-            console.log(err);
-        });
     }
 
     const changeMessageText = (event) => {

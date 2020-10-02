@@ -24,6 +24,7 @@ import Badge from '@material-ui/core/Badge';
 import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
 import SettingsIcon from '@material-ui/icons/Settings';
 import HomeIcon from '@material-ui/icons/Home';
+import SockJsClient from 'react-stomp';
 
 class Header extends Component {
 
@@ -31,7 +32,7 @@ class Header extends Component {
         super(props);
 
         this.state = {
-            anchorEl: null
+            anchorEl: null,
         }
     }
 
@@ -63,6 +64,19 @@ class Header extends Component {
         }
         else {
             return '';
+        }
+    }
+
+    messageReceiver(msg){
+        const senderEmail = msg.sender.email;
+        const receiverEmail = msg.receiver.email;
+        if( receiverEmail === this.props.user.email){
+            console.log(msg);
+            if(!this.props.chat.chatOpened){
+                const chatCounter = this.props.chat.counter + 1;
+                // this.setState({chatCounter: chatCounter});
+                this.props.chatSetNewCounterValue(chatCounter);
+            }
         }
     }
 
@@ -103,7 +117,7 @@ class Header extends Component {
                         </IconButton>
                     </Link>
                     <Link to={"/chat"} >
-                        <Badge badgeContent={5} color="primary">
+                        <Badge badgeContent={this.props.chat.counter} color="primary">
                             <IconButton color="primary">
                                 <ChatBubbleIcon />
                             </IconButton>
@@ -152,6 +166,24 @@ class Header extends Component {
                             <ListItemText inset primary={strings.header.logout} />
                         </MenuItem>
                     </Menu>
+                    <SockJsClient url='http://localhost:8081/websocket-chat/'
+                              topics={['/topic/user']}
+                              onConnect={() => {
+                                  console.log("connected");
+                              }}
+                              onDisconnect={() => {
+                                  console.log("Disconnected");
+                              }}
+                            //   onMessage={(msg) => {
+                            //       var jobs = this.state.messages;
+                            //       jobs.push(msg);
+                            //       this.setState({messages: jobs});
+                            //       console.log(this.state);
+                            //   }}
+                            onMessage={(msg) => this.messageReceiver(msg)}
+                              ref={(client) => {
+                                  this.clientRef = client
+                              }}/>
                 </div>
             </div>
 
@@ -163,11 +195,12 @@ function mapDispatchToProps(dispatch) {
     return bindActionCreators({
         changeMenuState: Actions.changeMenuState,
         logout: Actions.logout,
+        chatSetNewCounterValue: Actions.chatSetNewCounterValue
     }, dispatch);
 }
 
-function mapStateToProps({ menuReducers, authReducers }) {
-    return { menu: menuReducers, user: authReducers.user };
+function mapStateToProps({ menuReducers, authReducers, chatReducers }) {
+    return { menu: menuReducers, user: authReducers.user, chat: chatReducers };
 }
 
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Header));
